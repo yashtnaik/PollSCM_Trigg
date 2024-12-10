@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    parameters {
+        booleanParam name: 'RUN_PROJECT', defaultValue: false, description: 'Deploy or Not'
+        choice name: 'CHOOSE', choices: ['Production', 'Dev', 'Pre-prod', 'Testing'], description: 'Choose an option to run the job'
+    }
+     stages {
+        stage ('Deploy or not') {
+            steps {
+                 script {
+                    catchError(stageResult: 'FAILURE', buildResult: 'SUCCESS') {
+                    if (!params.RUN_PROJECT) {
+                        echo "Terminating the stage: ${param.RUN_PROJECT}"
+                    } else {
+                        echo "Running the Job since"
+                        }
+                    }
+                 }
+                }
+            }
+        stage ('Job Types') {
+                steps {
+                    script {
+                        if (params.CHOOSE == 'Production') {
+                            echo "This is Producion"
+                            sh 'ls -lrt'
+                        } else if (params.CHOOSE == 'Dev') {
+                            echo "This is Dev"
+                            sh 'sleep 5'
+                        } else if (params.CHOOSE == 'Pre-prod') {
+                            echo "This is Pre-prod"
+                            sh 'sleep 5'
+                        } else if (params.CHOOSE == 'Testing') {
+                            echo "This is Testing"
+                            sh 'sleep 5'
+                        }
+                    }
+                
+                }
+            }
+     }
+  }
